@@ -1,0 +1,110 @@
+{
+  "layout": {
+    "pages": [
+      {
+        "id": "BlueCat",
+        "title": "BlueCat endpoint",
+        "sections": [
+          {
+            "id": "section_1",
+            "fields": [
+              {
+                "id": "hostName",
+                "display": "textField"
+              },
+              {
+                "id": "privateKeyId",
+                "display": "textField"
+              },
+              {
+                "id": "privateKey",
+                "display": "passwordField"
+              },
+              {
+                "id": "configuration",
+                "display": "textField"
+              },
+              {
+                "id": "dnsZone",
+                "display": "textField"
+              },
+              {
+                "id": "viewName",
+                "display": "textField"
+              },
+              {
+                "id": "blockIds",
+                "display": "textField"
+              }
+            ]
+          }
+        ]
+      }
+    ]
+  },
+  "schema": {
+    "hostName": {
+      "type": {
+        "dataType": "string"
+      },
+      "label": "BlueCat Hostname",
+      "constraints": {
+        "required": true
+      }
+    },
+    "privateKeyId": {
+      "type": {
+        "dataType": "string"
+      },
+      "label": "Username",
+      "constraints": {
+        "required": true
+      }
+    },
+    "privateKey": {
+      "label": "Password",
+      "type": {
+        "dataType": "secureString"
+      },
+      "constraints": {
+        "required": true
+      }
+    },
+    "configuration": {
+      "type": {
+        "dataType": "string"
+      },
+      "label": "Configuration Name",
+      "constraints": {
+        "required": false
+      }
+    },
+    "dnsZone": {
+      "type": {
+        "dataType": "string"
+      },
+      "label": "DNS Zone (e.g. corp.example.com)",
+      "constraints": {
+        "required": false
+      }
+    },
+    "viewName": {
+      "type": {
+        "dataType": "string"
+      },
+      "label": "DNS View Name (e.g. Internal)",
+      "constraints": {
+        "required": false
+      }
+    },
+    "blockIds": {
+      "type": {
+        "dataType": "string"
+      },
+      "label": "Block IDs (Optional)",
+      "constraints": {
+        "required": false
+      }
+    }
+  }
+}

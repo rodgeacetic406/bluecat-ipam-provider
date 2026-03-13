@@ -1,0 +1,19 @@
+---
+name: "BlueCat"
+description: "BlueCat IPAM v2.3.19 - Full block traversal, NSX Federation support, 120-min polling. Author: Noah Farshad, Broadcom Professional Services"
+version: "2.3.19"
+
+abxConfig:
+  allocateIPActionId: "BlueCat_AllocateIP"
+  deallocateIPActionId: "BlueCat_DeallocateIP"
+  validateEndpointActionId: "BlueCat_ValidateEndpoint"
+  updateResourceActionId: "BlueCat_UpdateRecord"
+  getIPRangesActionId: "BlueCat_GetIPRanges"
+
+properties:
+  supportsAddressSpaces: true
+  supportsUpdateRecord: true
+  supportsOnDemandNetworks: false
+  dcIntervalInMinutes: 120
+
+addressSpaces: []
